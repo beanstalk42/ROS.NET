@@ -1333,6 +1333,15 @@ namespace FauxMessages
                     else
                         suffix = KnownStuff.GetConstTypesAffix(type);
                 string t = KnownStuff.GetNamespacedType(this, type);
+
+                // for some reason the current package namespace gets prepended to the Header type
+                // this will cause compilation to fail. This seems to be only the case when
+                // the package name is alphabeticly AFTER std_msgs.
+                // ugly hack: if type is Header but has a package prefix => hardcode it to "Header"
+                if (t.Contains("Header") && !t.Equals("Header"))
+                {
+                    t = "Header";
+                }
                 output = lowestindent + "public " + prefix + t + " " + name + otherstuff + suffix + "; //woo";
             }
             else
